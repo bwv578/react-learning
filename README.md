@@ -1,70 +1,71 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. 함수 컴포넌트에서 여러 태그를 return하는 경우 얘네를 무조건 하나의 부모 태그로 감싸서 반환해야된다.
+	1. 왜냐 하나의 트리구조로 만들기 위해서임 그래야지 Virual DOM으로 만들었을때 변경사항 추척할때 효율적임
+		1. DIV쓰기싫은데요? => <> 태그(Fragment기능) 사용하면 됩니다
+			1. impot {Frangment} from 'react';
+			   
+2. JSX 내부에서 자바스크립트 표현 사용 가능
+   
+	1. {} 안에다 js코드 집어넣으면 됨 ㅇㅇ
+		1. JSX 내부 js표현에는 if문 사용 못한다. 대신 삼항연산자 쓰면 됨.
+			```return ( <div>{name==='react' ? (<h1>리액트임</h1>) : (<h1>리액트 아님</h1>)}</div>);```
+			이런식으로 ㅇㅇ
+				
+	2. null 반환하면 컴포넌트 아무것도 안보여짐.
+	   
+	3. && 연산자를 아주 신박하게씀
+		1. return {조건식 && 태그} 이렇게쓰면 조건식이 참일때만 태그를 반환함 ㅁㅊ??	
+		2. 주의할 점 - falsy한 값 0은 예외적으로 화면에 보여진다.
+		
+	4. undefined 반환하면 오류난다
+		1. 어떤 값이 undefined일수도 있는 상황이면 || 연산자를 쓰렴
+		2. {값 || '값이 undefined임'} 이런 식으로 사용하면 주어진 값이 undefined일때 두번째 항의 문자열을 반환한다
+		
+3. 인라인 스타일링
+   
+	1. DOM 요소에 스타일 적용할땐 문자열 형태가 아니라 객체 형태로 넣어야됨
+	2. -이 포함되는 스타일 이름은 대신 카멜케이스로 표현
+	3. 대충 이런식으로 쓰면 된다
 
-## Available Scripts
+```jsx
+const style = {  
+    backgroundColor: 'green',  
+    color: 'red',  
+    fontSize: '50px'  
+};
+return <div style={style}>개쩌는 스타일</div>
+```
 
-In the project directory, you can run:
+4. 태그에 클래스 설정
+	1. class 가 아니고 className="reactClass" 이런식으로 태그에 설정하면됨
+```jsx
+return (
+	<>  
+	    <div>기본 태그</div>  
+	    <div className="example">개쩌는 CSS가 적용된 클래스 입니다</div>  
+	</>
+)
+```
+		이런식으로 하고 css파일에 example 클래스 효과 설정해두면 적용됨 ㅇㅇ
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+4. JS표현식에서 주석달기
+	1. 태그 선언부(꺾쇠 내부)에서는 //나 /** */ 로 주석 사용 가능
+	 ``` jsx 
+	 {/** 주석내용 */}
+``` 
+	2. 태그 내부에선 이런식으로 주석 사용 안됨ㅇㅇ 그대로 화면에 표시됨
+	3. 해보니까 태그 안에서는 <!-- --> 이런식으로도 주석 안먹힘 걍 컴파일오류남
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
