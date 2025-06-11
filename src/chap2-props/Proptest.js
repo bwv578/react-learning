@@ -14,3 +14,9 @@ export const Proptest2 = props => {
     </div>
 }
 
+export const Proptest3 = ({name, location}) => {
+    return <div>
+        <h1>이름 : {name}</h1>
+        <h1>지역 : {location}</h1>
+    </div>
+}
