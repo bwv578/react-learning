@@ -448,6 +448,72 @@ export const Say = ()=>{
 
 
 
+# 이벤트 핸들링
+
+1. 리액트에서의 이벤트 핸들링
+	1. 이벤트명은 카멜케이스로 작성
+	2. HTML과 달리 onClick에 실행할 코드가 아닌 실행할 함수를 넣음
+		1. HTML에서 onclick="실행할코드" 이렇게하는식 말고 함수ㅇㅇ
+	3. DOM 요소에만 이벤트 설정 가능
+		1. 니가 직접만든 컴포넌트에는 이벤트 못넣는다 ㅇㅇ
+
+2. 메소드 바인딩
+	- 클래스형 컴포넌트에서 미리 정의해둔 함수를 이벤트의 핸들러로 사용할 수 있음. 성능상으론 별차이 없는데 가독성 좋아짐
+	  
+	- 주의할 점으로 클래스형 컴포넌트에서 이벤트 핸들러 함수를 일반적인 형태로 정의한 경우 생성자 내부에서 this.핸들러메소드.bind(this) 해둬야 onChange={this.handleChange} 식으로 사용 가능.
+		- 왜냐? 자바스크립트의 this가 가리키는 대상은 호출부에 따라 결정되는데 메소드가 특정 HTML 요소의 이벤트로 등록되는 과정에서 관계가 끊김. 그래서 바인드 따로 안해주면 this=undefined됨 ㅇㅇ
+		- 바인드하기가 번거로우면 메소드를 화살표 함수로 정의하면 된다. 화살표 함수는 내부의 this를 정의된 시점의 스코프에서 고정시키기 때문에 항상 클래스 인스턴스를 가리키게 된다.
+
+3. 하나의 핸들러 메소드로 여러 인풋 다루기
+	1. e.target.name => 이벤트 변수 e로부터 name 추출 가능 
+	2. 객체 안에서 키를 []로 감싸면 내부의 레퍼런스가 가리키는 실제 값을 키로 사용할 수 있다.
+```JSX
+handleEvent = (e)=>{  
+    this.setState({  
+        [e.target.name] : e.target.value  
+    });  
+}
+```
+> 응용해서 이렇게 쓰면 여러개의 인풋 각각의 핸들러를 this.handleEvent로 공통 사용하고, 인풋 태그의 name만 다르게 설정해서 각각의 name에 해당하는 state 키를 조작할 수 있음
+
+	3.함수형 컴포넌트에서 하나의 핸들러 메소드로 여러 인풋을 다룰땐 useState로 state 변수
+	초기화시 객체타입을 사용하면 구현 가능하다.
+```JSX
+export const EventPrac7 = () => {  
+    const [form, setForm] = useState({  
+        name : '돼지',  
+        home : '돼지우리',  
+        food : '옥수수',  
+        message : '꿀꿀'  
+    });  
+  
+    const handleChange = (e)=>{  
+        setForm({  
+           ...form,  
+           [e.target.name] : e.target.value  
+        });  
+    }  
+  
+    return <div>  
+        <h1>난 {form.name}</h1>  
+        <h1>난 {form.home}에 산다</h1>  
+        <h1>난 {form.food}먹는다</h1>  
+        <h1>{form.message}</h1>  
+        <input type="text" name="name" onChange={(e) => {  
+            handleChange(e);  
+        }}/>  
+        <input type="text" name="home" onChange={(e) => {  
+            handleChange(e);  
+        }}/>  
+        <input type="text" name="food" onChange={(e) => {  
+            handleChange(e);  
+        }}/>  
+        <input type="text" name="message" onChange={(e) => {  
+            handleChange(e);  
+        }}/>  
+    </div>  
+}
+```
 
 
 

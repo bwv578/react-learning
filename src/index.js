@@ -11,13 +11,17 @@ import {PropsInClassComponent, PropsInClassComponent2} from "./chap2-props/Props
 import {StateInClassComponent} from "./chap3-state/State-in-class-component";
 import {Say} from "./chap3-state/UseState-in-function-component"
 import {StatePrecautions} from "./chap3-state/State-precautions";
+import {EventPrac1} from "./chap4-event-handling/Prac1-event-basic"
+import {EventPrac2, EventPrac3, EventPrac4} from "./chap4-event-handling/Prac2-putting-input-in-state";
+import {EventPrac5} from "./chap4-event-handling/Prac3-using-multiple-inputs";
+import {EventPrac6, EventPrac7} from "./chap4-event-handling/Prac4-using-function-component"
 
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <StatePrecautions/>
+      <EventPrac7 />
   </React.StrictMode>
 );
 
