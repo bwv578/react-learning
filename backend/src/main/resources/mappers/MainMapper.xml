@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="personal.reactlearning.simpleboard.main.mapper.MainMapper">
+    <insert id="insertTest">
+        INSERT INTO CHORE (COL4, COL5, COL6) VALUES (1, 1, 1)
+    </insert>
+</mapper>
