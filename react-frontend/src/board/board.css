@@ -1,0 +1,4 @@
+table.board-table th,
+table.board-table td{
+    border: 2px solid black;
+}

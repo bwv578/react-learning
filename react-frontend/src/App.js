@@ -1,34 +1,61 @@
 import logo from './logo.svg';
 import './App.css';
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 function App() {
-    const [user, setUser] = useState({
+    const [newUser, setNewUser] = useState({
         "id" : "",
         "name" : "",
-        "pw" : "",
-        "pw2": ""
+        "pw" : ""
     });
+    const [user, setUser] = useState({
+        "id" : "",
+        "pw" : ""
+    });
+    const navigate = useNavigate();
 
     const handleUserInfoChange = (e) => {
-        setUser({
-            ...user,
-            [e.target.name] : e.target.value
-        });
+        const parent = e.target.closest('form').getAttribute('id');
+        // eslint-disable-next-line default-case
+        switch (parent){
+            case 'signup-form':
+                setNewUser({
+                    ...newUser,
+                    [e.target.name] : e.target.value
+                });
+                return;
+            case 'signin-form':
+                setUser({
+                    ...user,
+                    [e.target.name] : e.target.value
+                });
+                return;
+        }
     }
-    const signup = () => {
+
+    const signUp = () => {
         if(!isValidForm("signup-form")) return false;
         fetch("/signup", {
             method: "POST",
             headers:{
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify(newUser)
         })
             .then(res=>res.json())
-            .then(data=>true)
+            .then(data=>{
+                switch (data){
+                    case 0 :
+                        alert("error");
+                        break;
+                    case 1 :
+                        setNewUser({"id":'', "pw":'', "name":''});
+                }
+            })
             .catch(err=>alert(err));
     }
+
     const signIn = () => {
         if(!isValidForm("signin-form")) return false;
         fetch("/signin", {
@@ -36,15 +63,23 @@ function App() {
             headers:{
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                id: 'jwchoitest'
-            })
-            // body: JSON.stringify(user)
+            body: JSON.stringify(user)
         })
             .then(res=>res.json())
-            .then(data=>true)
+            .then(data=>{
+                switch (data){
+                    case 0 :
+                        alert("Invalid");
+                        break;
+                    case 1 :
+                        alert("Success");
+                        navigate("/articles");
+                        break;
+                }
+            })
             .catch(err=>alert(err));
     }
+
     const isValidForm = (formId) => {
         const form = document.getElementById(formId);
         for(const child of form.children){
@@ -65,20 +100,22 @@ function App() {
             <div style={{display: 'flex', justifyContent: 'center'}}>
                 <div style={{width: '30%', textAlign: 'center'}}>
                     <h3>Sign up</h3>
-                    <form id={"signup-form"}>
-                        Name: <input type={"text"} name={"name"} onChange={handleUserInfoChange}/><br/>
-                        ID: <input type={"text"} name={"id"} onChange={handleUserInfoChange}/><br/>
-                        PW: <input type={"text"} name={"pw"} onChange={handleUserInfoChange}/><br/>
+                    <form id="signup-form">
+                        Name: <input type={"text"} name={"name"} onChange={handleUserInfoChange} value={newUser.name}/><br/>
+                        ID: <input type={"text"} name={"id"} onChange={handleUserInfoChange} value={newUser.id}/><br/>
+                        PW: <input type={"text"} name={"pw"} onChange={handleUserInfoChange} value={newUser.pw}/><br/>
                     </form>
                     <button onClick={()=>{
-                        signup();
+                        signUp();
                     }}>submit</button>
                 </div>
                 <div style={{width: '30%', textAlign: 'center'}}>
                     <h3>Sign in</h3>
-                    <form id={"signin-form"}>
-                        ID: <input type={"text"} className={"not-null dd"} name={"id"} onChange={handleUserInfoChange}/><br/>
-                        PW: <input type={"text"} className={"not-null cc"} name={"pw"} onChange={handleUserInfoChange}/><br/>
+                    <form id="signin-form">
+                        ID: <input type={"text"} className={"not-null dd"} name={"id"}
+                                   onChange={handleUserInfoChange} value={user.id}/><br/>
+                        PW: <input type={"text"} className={"not-null cc"} name={"pw"}
+                                   onChange={handleUserInfoChange} value={user.pw}/><br/>
                     </form>
                     <button onClick={() => {
                         signIn();
