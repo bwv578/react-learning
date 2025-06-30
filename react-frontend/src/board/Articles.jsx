@@ -1,27 +1,45 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 import "./board.css";
 
 export const Articles = ()=>{
+
+    useEffect(()=>{
+        loadArticles();
+    });
 
     const [searchKey, setSearchKey] = useState("");
     const [orderBy, setOrderBy] = useState("");
     const navigate = useNavigate();
 
     const loadArticles = ()=>{
-        fetch('/articles', {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                searchKey: searchKey,
-                orderBy: orderBy
-            })
-        })
+        fetch('/board/articles')
             .then(res=>res.json())
             .then(data=>{
+                document.getElementById('articles-body').innerHTML = '';
+                const columns = ['title', 'writerName', 'registeredAt', 'views'];
 
+                for (let i=0; i<data.length; i++){
+                    let row = document.createElement("tr");
+                    const number = document.createElement('td');
+                    number.textContent = i+1;
+                    row.appendChild(number);
+                    const rowObject = data[i];
+
+                    for(const column of columns){
+                        let item  = document.createElement("td");
+                        item.textContent = rowObject[column];
+                        row.appendChild(item);
+                    }
+
+                    row.addEventListener('click', ()=>{
+                        navigate('/ArticleView', {state:{
+                            articleCode:rowObject.articleCode
+                        }});
+                    });
+                    document.getElementById('articles-body').appendChild(row);
+                }
             })
             .catch()
     }
@@ -50,13 +68,15 @@ export const Articles = ()=>{
         <table id="contents-list" className="board-table"
                style={{width: "80%", margin:"0 auto", justifyContent: "center"}}>
             <thead>
-            <th style={{width: "5%"}}>No.</th>
-            <th style={{width: "40%"}}>Title</th>
-            <th style={{width: "22%"}}>Writer</th>
-            <th style={{width: "25%"}}>Date</th>
-            <th style={{width: "5%"}}>Views</th>
+            <tr>
+                <th style={{width: "5%"}}>No.</th>
+                <th style={{width: "40%"}}>Title</th>
+                <th style={{width: "22%"}}>Writer</th>
+                <th style={{width: "25%"}}>Date</th>
+                <th style={{width: "5%"}}>Views</th>
+            </tr>
             </thead>
-            <tbody>
+            <tbody id="articles-body">
             </tbody>
         </table>
 

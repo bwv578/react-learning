@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="personal.reactlearning.simpleboard.board.mapper.BoardMapper">
-    <insert id="addNewArticle" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
+
+    <insert id="insertArticle" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
         INSERT INTO ARTICLE (ARTICLE_CODE, TITLE, WRITER_CODE, CONTENT, REGISTERED_AT)
         VALUES (SEQ_ARTICLE_CODE.NEXTVAL, #{title}, #{writerCode}, #{content}, SYSDATE)
     </insert>
 
-    <select id="selectArticleList" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
+    <select id="selectArticles" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
         SELECT
             A.ARTICLE_CODE AS articleCode,
             A.TITLE AS title,
@@ -29,4 +30,24 @@
         ORDER BY #{sortBy} #{order}
         </if>
     </select>
+
+    <select id="selectArticle" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
+        SELECT
+            A.ARTICLE_CODE AS articleCode,
+            A.WRITER_CODE AS writerCode,
+            U.NAME AS writerName,
+            A.TITLE AS title,
+            A.CONTENT AS content,
+            A.REGISTERED_AT AS registeredAt,
+            A.VIEWS AS views
+        FROM ARTICLE A INNER JOIN USERS U ON A.WRITER_CODE = U.USER_CODE
+        WHERE A.ARTICLE_CODE = #{articleCode}
+          AND A.STATUS = 1
+    </select>
+
+    <insert id="insertComment" parameterType="personal.reactlearning.simpleboard.board.domain.Comment">
+        INSERT INTO "COMMENT" (COMMENT_CODE, WRITER_CODE, ARTICLE_CODE, PARENT_CODE, CONTENT, REGISTERED_AT, STATUS)
+        VALUES (SEQ_COMMENT_CODE.NEXTVAL, #{writerCode}, #{articleCode}, #{parentCode}, #{content}, #{registeredAt}, #{status})
+    </insert>
+
 </mapper>

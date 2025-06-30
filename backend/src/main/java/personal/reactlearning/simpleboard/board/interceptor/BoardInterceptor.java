@@ -14,7 +14,7 @@ public class BoardInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         User currentUser = LoginManager.getCurrentUser(request);
         if(currentUser==null){
-            response.sendRedirect("/articles");
+            response.sendRedirect("/");
             return false;
         }
         return true;

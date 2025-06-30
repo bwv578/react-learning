@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
@@ -68,7 +67,7 @@ function App() {
             .then(res=>res.json())
             .then(data=>{
                 switch (data){
-                    case 0 :
+                    case -1 :
                         alert("Invalid");
                         break;
                     case 1 :

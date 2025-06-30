@@ -7,6 +7,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import App from './App';
 import {Articles} from './board/Articles';
 import {AddNewArticle} from "./board/AddNewArticle";
+import {ArticleView} from "./board/ArticleView";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,11 +16,9 @@ root.render(
             <Route path="/" element={<App/>}></Route>
             <Route path="/articles" element={<Articles/>}></Route>
             <Route path="/addNewArticle" element={<AddNewArticle/>}></Route>
+            <Route path="/articleView" element={<ArticleView/>}></Route>
         </Routes>
     </BrowserRouter>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

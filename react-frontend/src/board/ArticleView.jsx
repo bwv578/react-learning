@@ -1,12 +1,23 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useNavigate, useLocation} from "react-router-dom";
 
-export const AddNewArticle = ()=>{
+export const ArticleView = (props) => {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [article, setArticle] = useState({
+        articleCode: 0,
         title: '',
         content: '',
+        views: ''
     });
-    const navigate = useNavigate();
+    const [comment, setComment] = useState({
+        articleCode: article.articleCode,
+        content: ''
+    })
+    useEffect(() => {
+        const articleCode = location.state?.articleCode;
+        getArticle(articleCode);
+    });
 
     const handleInput = (e)=>{
         setArticle({
@@ -14,28 +25,20 @@ export const AddNewArticle = ()=>{
             [e.target.name]: e.target.value
         })
     }
-
-    const submitArticle = (e)=>{
-        e.preventDefault();
-        fetch("/board/article", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(article)
+    const handleComment = (e) => {
+        setComment({
+            ...comment,
+            [e.target.name]: e.target.value
         })
+    }
+
+    const getArticle = (articleCode) => {
+        fetch('/board/article?articleCode='+articleCode)
             .then(res=>res.json())
-            .then(result=>{
-                alert(JSON.stringify(result));
-                switch (result){
-                    case 1:
-                        navigate('/articles');
-                        break;
-                    case -1:
-                        alert('error');
-                }
+            .then(data=>{
+                setArticle(data);
             })
-            .catch(error=>{alert(error)})
+            .catch(err=>{})
     }
 
     return (
@@ -45,7 +48,7 @@ export const AddNewArticle = ()=>{
             justifyContent: "center"
         }}>
             <div style={{width: "100%", maxWidth: "1600px"}}>
-                <h1 style={{textAlign: "center"}}>New Post</h1>
+                <h1 style={{textAlign: "center"}}>Article</h1>
                 <br/><hr/><br/>
                 <form
                     id="new-article-form"
@@ -55,7 +58,6 @@ export const AddNewArticle = ()=>{
                         alignItems: "center"
                     }}
                 >
-
                     <div style={{
                         width: "80%",
                         margin: "0 auto",
@@ -70,6 +72,7 @@ export const AddNewArticle = ()=>{
                             value={article.title}
                             onInput={handleInput}
                             style={{width: "100%", marginBottom: "10px"}}
+                            readOnly={true}
                         />
                     </div><br/>
 
@@ -86,6 +89,7 @@ export const AddNewArticle = ()=>{
                             value={article.content}
                             onInput={handleInput}
                             style={{width: "100%", height: "500px"}}
+                            readOnly={true}
                         />
                     </div>
 
@@ -96,12 +100,51 @@ export const AddNewArticle = ()=>{
                         justifyContent: "flex-end",
                         marginTop: "10px"
                     }}>
-                        <button onClick={(e) => {
-                            submitArticle(e)}}>
-                            Send
+                        <button onClick={(e) => {}}>
+                            Update
                         </button>
                     </div>
                 </form>
+                <hr style={{marginTop:'30px'}}/>
+
+                <div style={{
+                    display: "flex",
+                    width: "100%",
+                    alignItems: "center",
+                    flexDirection: "column"
+                }}>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "flex-start",
+                        width: "80%",
+                    }}>
+                        <h4>Comments ({article.views})</h4>
+                    </div>
+
+                    <textarea style={{
+                        width: "80%", height: "50px"
+                    }}
+                              name="content"
+                              value={comment.content}
+                              onInput={(
+                                  e)=>{handleComment(e)
+                              }}>
+                    </textarea>
+
+                    <div style={{
+                        width: "80%",
+                        margin: "0 auto",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        marginTop: "10px"
+                    }}>
+                        <button onClick={(e)=>{
+                            alert('클릭')
+                        }}>+댓글
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
