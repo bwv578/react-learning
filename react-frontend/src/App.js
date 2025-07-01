@@ -1,8 +1,18 @@
 import './App.css';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 function App() {
+
+    useEffect(() => {
+        fetch('/loginStatus')
+            .then(res=>res.json())
+            .then(data=>{
+                if(data===1) navigate('/articles');
+            })
+            .catch(err=>{})
+    }, []);
+
     const [newUser, setNewUser] = useState({
         "id" : "",
         "name" : "",

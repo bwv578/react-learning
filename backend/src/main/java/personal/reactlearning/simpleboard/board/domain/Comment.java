@@ -7,9 +7,11 @@ import personal.reactlearning.simpleboard.common.domain.SearchKey;
 public class Comment extends SearchKey {
     private int commentCode;
     private int writerCode;
+    private String writerName;
     private int articleCode;
     private int parentCode;
     private String content;
     private String registeredAt;
     private int status;
+    private boolean myComment;
 }

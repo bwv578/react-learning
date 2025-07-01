@@ -13,5 +13,5 @@ public class Article extends SearchKey {
     private int status;
     private String registeredAt;
     private int views;
-    private boolean isMyArticle;
+    private boolean myArticle;
 }

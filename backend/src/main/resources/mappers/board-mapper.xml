@@ -7,6 +7,12 @@
         VALUES (SEQ_ARTICLE_CODE.NEXTVAL, #{title}, #{writerCode}, #{content}, SYSDATE)
     </insert>
 
+    <update id="deleteArticle" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
+        UPDATE ARTICLE SET STATUS = -1
+        WHERE ARTICLE_CODE = #{articleCode}
+          AND WRITER_CODE = #{writerCode}
+    </update>
+
     <select id="selectArticles" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
         SELECT
             A.ARTICLE_CODE AS articleCode,
@@ -19,10 +25,10 @@
             CASE
                 WHEN WRITER_CODE=#{writerCode} THEN 1
                 ELSE 0
-            END AS isMyArticle
+            END AS myArticle
         FROM
             ARTICLE A INNER JOIN USERS U ON A.WRITER_CODE = U.USER_CODE
-        WHERE 1=1
+        WHERE A.STATUS = 1
             <if test="searchKey!=null and searchType!=null">
             AND #{searchType} = #{searchKey}
             </if>
@@ -39,15 +45,39 @@
             A.TITLE AS title,
             A.CONTENT AS content,
             A.REGISTERED_AT AS registeredAt,
-            A.VIEWS AS views
+            A.VIEWS AS views,
+            CASE
+                WHEN WRITER_CODE=#{writerCode} THEN 1
+                ELSE 0
+            END AS myArticle
         FROM ARTICLE A INNER JOIN USERS U ON A.WRITER_CODE = U.USER_CODE
         WHERE A.ARTICLE_CODE = #{articleCode}
           AND A.STATUS = 1
     </select>
 
+    <select id="selectComments" parameterType="personal.reactlearning.simpleboard.board.domain.Comment"
+            resultType="personal.reactlearning.simpleboard.board.domain.Comment">
+        SELECT
+            C.COMMENT_CODE AS commentCode,
+            C.WRITER_CODE AS writerCode,
+            U.NAME AS writerName,
+            C.ARTICLE_CODE AS articleCode,
+            C.PARENT_CODE AS parentCode,
+            C.CONTENT AS content,
+            C.REGISTERED_AT AS registeredAt,
+            C.STATUS AS status,
+            CASE
+                WHEN C.WRITER_CODE=#{writerCode} THEN 1
+                ELSE 0
+            END AS myComment
+        FROM "COMMENT" C INNER JOIN USERS U ON C.WRITER_CODE = U.USER_CODE
+        WHERE C.ARTICLE_CODE = #{articleCode}
+          AND C.STATUS = 1
+    </select>
+
     <insert id="insertComment" parameterType="personal.reactlearning.simpleboard.board.domain.Comment">
         INSERT INTO "COMMENT" (COMMENT_CODE, WRITER_CODE, ARTICLE_CODE, PARENT_CODE, CONTENT, REGISTERED_AT, STATUS)
-        VALUES (SEQ_COMMENT_CODE.NEXTVAL, #{writerCode}, #{articleCode}, #{parentCode}, #{content}, #{registeredAt}, #{status})
+        VALUES (SEQ_COMMENT_CODE.NEXTVAL, #{writerCode}, #{articleCode}, #{parentCode}, #{content}, SYSDATE, 1)
     </insert>
 
 </mapper>

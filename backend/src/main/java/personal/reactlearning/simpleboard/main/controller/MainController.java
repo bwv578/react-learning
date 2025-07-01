@@ -17,11 +17,17 @@ public class MainController {
     JdbcTemplate jdbcTemplate;
     @Autowired
     private MainMapper mainMapper;
-    LoginManager loginManager = LoginManager.getInstance();
 
     @RequestMapping("/")
-    public String main(){
+    public String main(HttpServletRequest req, HttpServletResponse res){
+        if(LoginManager.getCurrentUser(req)!=null) return "redirect:http://localhost:3000/articles";
         return "redirect:http://localhost:3000";
+    }
+
+    @GetMapping("/loginStatus")
+    @ResponseBody
+    public int getLoginStatus(HttpServletRequest req){
+        return LoginManager.getLoginStatus(req);
     }
 
     @PostMapping("/signup")

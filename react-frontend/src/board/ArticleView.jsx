@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate, useLocation} from "react-router-dom";
+import {useNavigate, useLocation, data} from "react-router-dom";
 
 export const ArticleView = (props) => {
     const location = useLocation();
@@ -8,16 +8,22 @@ export const ArticleView = (props) => {
         articleCode: 0,
         title: '',
         content: '',
-        views: ''
+        views: '',
+        myArticle: ''
     });
     const [comment, setComment] = useState({
         articleCode: article.articleCode,
         content: ''
     })
+    const [commentCnt, setCommentCnt] = useState(0);
+
     useEffect(() => {
         const articleCode = location.state?.articleCode;
+        setArticle({
+            ...article, articleCode: articleCode
+        });
         getArticle(articleCode);
-    });
+    }, []);
 
     const handleInput = (e)=>{
         setArticle({
@@ -31,14 +37,86 @@ export const ArticleView = (props) => {
             [e.target.name]: e.target.value
         })
     }
-
     const getArticle = (articleCode) => {
         fetch('/board/article?articleCode='+articleCode)
             .then(res=>res.json())
             .then(data=>{
                 setArticle(data);
+                getComments(articleCode);
             })
             .catch(err=>{})
+    }
+    const getComments = (articleCode) => {
+        fetch('/board/comments?articleCode='+articleCode)
+            .then(res=>res.json())
+            .then(data=>{
+                const elements = ['commentCode', 'writerCode', 'writerName',
+                    'parentCode', 'registeredAt', 'status'];
+                const comments = document.getElementById('comments');
+                comments.innerHTML = '';
+
+                for(let i=0; i<data.length; i++){
+                    const rowData = data[i];
+                    let row = document.createElement("form");
+                    row.style.marginBottom = '30px';
+                    row.style.width = '100%';
+                    row.style.height = '70px';
+                    row.style.marginTop = '0px';
+                    let rowInfo = document.createElement('div');
+                    rowInfo.style.width = '30%';
+                    rowInfo.style.display = 'flex';
+                    rowInfo.style.alignItems = 'flex-stat';
+                    let writerName = document.createElement('h4');
+                    writerName.textContent = rowData.writerName;
+                    writerName.style.marginBottom = '5px';
+                    rowInfo.appendChild(writerName);
+                    let registeredAt = document.createElement('h4');
+                    registeredAt.style.marginBottom = '5px';
+                    registeredAt.style.color = 'rgba(0, 0, 0, 0.5)';
+                    registeredAt.style.marginLeft = '15px';
+                    registeredAt.textContent = rowData.registeredAt;
+                    rowInfo.appendChild(registeredAt);
+                    let content = document.createElement('textarea');
+                    content.style.width = '100%';
+                    content.style.height = '50px';
+                    content.style.marginTop = '0px';
+                    content.textContent = rowData.content;
+                    row.appendChild(rowInfo);
+                    row.appendChild(content);
+
+                    for(const element of elements){
+                        let attribute = document.createElement('input');
+                        attribute.setAttribute('type','hidden');
+                        attribute.value = rowData[element];
+                        row.appendChild(attribute);
+                    }
+                    comments.appendChild(row);
+                }
+
+                setCommentCnt(data.length);
+                setComment({
+                    articleCode: 0,
+                    title: '',
+                    content: '',
+                    views: '',
+                    myArticle: ''
+                });
+            })
+    }
+    const postComment = () => {
+        fetch('/board/comment', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                ...comment,
+                articleCode: article.articleCode
+            })
+        })
+            .then(res => res.json())
+            .then(data=>{getComments(article.articleCode)})
+            .catch(err=>{alert('err')})
     }
 
     return (
@@ -100,9 +178,12 @@ export const ArticleView = (props) => {
                         justifyContent: "flex-end",
                         marginTop: "10px"
                     }}>
-                        <button onClick={(e) => {}}>
+                        {
+                            article.myArticle &&
+                            <button onClick={(e) => {}}>
                             Update
-                        </button>
+                            </button>
+                        }
                     </div>
                 </form>
                 <hr style={{marginTop:'30px'}}/>
@@ -113,17 +194,8 @@ export const ArticleView = (props) => {
                     alignItems: "center",
                     flexDirection: "column"
                 }}>
-                    <div style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "flex-start",
-                        width: "80%",
-                    }}>
-                        <h4>Comments ({article.views})</h4>
-                    </div>
-
                     <textarea style={{
-                        width: "80%", height: "50px"
+                        width: "80%", height: "50px", marginTop:"30px"
                     }}
                               name="content"
                               value={comment.content}
@@ -140,11 +212,34 @@ export const ArticleView = (props) => {
                         marginTop: "10px"
                     }}>
                         <button onClick={(e)=>{
-                            alert('클릭')
+                            postComment()
                         }}>+댓글
                         </button>
                     </div>
+
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        width: "100%",
+                        marginTop: "0px"
+                    }}>
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "flex-start",
+                            width: "80%",
+                        }}>
+                            <h4 style={{marginBottom:'10px'}}>Comments ({commentCnt})</h4>
+                        </div>
+
+                        <div id='comments' style={{
+                            width: "80%"
+                        }}>
+                        </div>
+                    </div>
                 </div>
+                <br/><hr/><br/>
             </div>
         </div>
     );

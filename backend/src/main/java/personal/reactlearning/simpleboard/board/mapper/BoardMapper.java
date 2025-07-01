@@ -8,8 +8,10 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
-    public int insertArticle(Article newArticle);
-    public List<Article> selectArticles(Article searchCondition);
-    public Article selectArticle(Article target);
-    public int insertComment(Comment newComment);
+    int insertArticle(Article newArticle);
+    int deleteArticle(Article target);
+    List<Article> selectArticles(Article searchCondition);
+    Article selectArticle(Article target);
+    List<Comment> selectComments(Comment searchCondition);
+    int insertComment(Comment newComment);
 }

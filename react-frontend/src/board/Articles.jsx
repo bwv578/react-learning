@@ -30,18 +30,43 @@ export const Articles = ()=>{
                     for(const column of columns){
                         let item  = document.createElement("td");
                         item.textContent = rowObject[column];
+                        if(column==='title' && rowObject.myArticle){
+                            let delBtn = document.createElement('button');
+                            delBtn.style.marginLeft = "5px";
+                            delBtn.style.color = "red";
+                            delBtn.style.backgroundColor = "white";
+                            delBtn.textContent = 'X';
+                            delBtn.addEventListener('click', (e)=>{
+                                e.stopPropagation();
+                                deleteArticle(rowObject.articleCode);
+                            });
+                            item.appendChild(delBtn);
+                        }
                         row.appendChild(item);
                     }
 
                     row.addEventListener('click', ()=>{
-                        navigate('/ArticleView', {state:{
-                            articleCode:rowObject.articleCode
+                        navigate('/ArticleView', {state: {
+                            articleCode: rowObject.articleCode
                         }});
                     });
                     document.getElementById('articles-body').appendChild(row);
                 }
             })
             .catch()
+    }
+
+    const deleteArticle = (articleCode) => {
+        fetch('/board/article',{
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                articleCode: articleCode
+            })
+        })
+            .then(res=>res.json())
+            .then(data=>{loadArticles();})
+            .catch(err=>{})
     }
 
     return <div>

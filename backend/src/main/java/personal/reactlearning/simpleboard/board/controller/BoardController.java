@@ -35,12 +35,28 @@ public class BoardController {
         return boardMapper.insertArticle(newArticle);
     }
 
+    @DeleteMapping("/article")
+    @ResponseBody
+    public int deleteArticle(@RequestBody Article target,
+                             HttpServletRequest req, HttpServletResponse res){
+        target.setWriterCode(LoginManager.getCurrentUserCode(req));
+        return boardMapper.deleteArticle(target);
+    }
+
     @GetMapping("/article")
     @ResponseBody
     public Article getArticle(@ModelAttribute Article target,
                               HttpServletRequest req, HttpServletResponse res){
         target.setWriterCode(LoginManager.getCurrentUserCode(req));
         return boardMapper.selectArticle(target);
+    }
+
+    @GetMapping("/comments")
+    @ResponseBody
+    public List<Comment> getComments(@ModelAttribute Comment searchCondition,
+                                     HttpServletRequest req, HttpServletResponse res){
+        searchCondition.setWriterCode(LoginManager.getCurrentUserCode(req));
+        return boardMapper.selectComments(searchCondition);
     }
 
     @PostMapping("/comment")
@@ -50,4 +66,5 @@ public class BoardController {
         newComment.setWriterCode(LoginManager.getCurrentUserCode(req));
         return boardMapper.insertComment(newComment);
     }
+
 }

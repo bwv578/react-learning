@@ -33,4 +33,8 @@ public class LoginManager {
         if(currentUser==null) return 0;
         return currentUser.getUserCode();
     }
+    public static int getLoginStatus(HttpServletRequest req){
+        if(getCurrentUser(req)==null) return 0;
+        return 1;
+    }
 }
