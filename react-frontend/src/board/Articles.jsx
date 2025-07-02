@@ -6,15 +6,17 @@ import "./board.css";
 export const Articles = ()=>{
 
     useEffect(()=>{
-        loadArticles();
+        getArticles();
+    }, []);
+    const [searchKey, setSearchKey] = useState({
+        searchValue: '',
+        searchType: '1'
     });
-
-    const [searchKey, setSearchKey] = useState("");
     const [orderBy, setOrderBy] = useState("");
     const navigate = useNavigate();
 
-    const loadArticles = ()=>{
-        fetch('/board/articles')
+    const getArticles = ()=>{
+        fetch('/board/articles?searchType='+searchKey.searchType+"&searchValue="+searchKey.searchValue)
             .then(res=>res.json())
             .then(data=>{
                 document.getElementById('articles-body').innerHTML = '';
@@ -65,7 +67,7 @@ export const Articles = ()=>{
             })
         })
             .then(res=>res.json())
-            .then(data=>{loadArticles();})
+            .then(data=>{getArticles();})
             .catch(err=>{})
     }
 
@@ -74,10 +76,27 @@ export const Articles = ()=>{
         <br/>
 
         <form id={"search-form"} style={{display:"flex", justifyContent:"center"}}>
-            <input type={"text"} value={searchKey} onInput={(e)=>{
-                setSearchKey(e.target.value);
+            <select name="searchType" onChange={(e) => {
+                setSearchKey({
+                    ...searchKey,
+                    searchType: e.target.value
+                });
+            }} value={searchKey.searchType}>
+                <option value="1" selected={true}>제목</option>
+                <option value="2">내용</option>
+                <option value="3">제목+내용</option>
+                <option value="4">글쓴애 닉넴</option>
+            </select>
+            <input type="text" value={searchKey.searchValue} onInput={(e)=>{
+                setSearchKey({
+                    ...searchKey,
+                    searchValue: e.target.value
+                });
             }}/>
-            <button>Search</button>
+            <button onClick={(e)=>{
+                e.preventDefault();
+                getArticles();
+            }}>Search</button>
         </form>
         <br/>
 
@@ -87,7 +106,7 @@ export const Articles = ()=>{
             display: "flex",
             justifyContent: "flex-end"
         }}>
-            <button onClick={(e)=>{navigate("/AddNewArticle")}}>+</button>&nbsp;
+            <button onClick={(e)=>{navigate("/AddNewArticle")}}>+새글 싸기</button>&nbsp;
         </div>
 
         <table id="contents-list" className="board-table"

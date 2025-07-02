@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import personal.reactlearning.simpleboard.board.domain.Article;
 import personal.reactlearning.simpleboard.board.domain.Comment;
 import personal.reactlearning.simpleboard.board.mapper.BoardMapper;
+import personal.reactlearning.simpleboard.board.service.BoardService;
 import personal.reactlearning.simpleboard.main.LoginManager;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public class BoardController {
 
     @Autowired
     BoardMapper boardMapper;
+    @Autowired
+    private BoardService boardService;
 
     @GetMapping("/articles")
     @ResponseBody
@@ -48,7 +51,15 @@ public class BoardController {
     public Article getArticle(@ModelAttribute Article target,
                               HttpServletRequest req, HttpServletResponse res){
         target.setWriterCode(LoginManager.getCurrentUserCode(req));
-        return boardMapper.selectArticle(target);
+        return boardService.getArticle(target);
+    }
+
+    @PatchMapping("/article")
+    @ResponseBody
+    public int updateArticle(@RequestBody Article modifiedArticle,
+                             HttpServletRequest req, HttpServletResponse res){
+        modifiedArticle.setWriterCode(LoginManager.getCurrentUserCode(req));
+        return boardMapper.updateArticle(modifiedArticle);
     }
 
     @GetMapping("/comments")
@@ -65,6 +76,14 @@ public class BoardController {
                            HttpServletRequest req, HttpServletResponse res){
         newComment.setWriterCode(LoginManager.getCurrentUserCode(req));
         return boardMapper.insertComment(newComment);
+    }
+
+    @DeleteMapping("/comment")
+    @ResponseBody
+    public int deleteComment(@RequestBody Comment target,
+                             HttpServletRequest req, HttpServletResponse res){
+        target.setWriterCode(LoginManager.getCurrentUserCode(req));
+        return boardMapper.deleteComment(target);
     }
 
 }

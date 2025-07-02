@@ -54,12 +54,11 @@ function App() {
         })
             .then(res=>res.json())
             .then(data=>{
-                switch (data){
-                    case 0 :
-                        alert("error");
-                        break;
-                    case 1 :
-                        setNewUser({"id":'', "pw":'', "name":''});
+                if(data===1){
+                    setNewUser({"id":'', "pw":'', "name":''});
+                    alert("registerd.");
+                }else{
+                    alert("error");
                 }
             })
             .catch(err=>alert(err));

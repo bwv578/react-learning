@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {useNavigate, useLocation, data} from "react-router-dom";
+import {resume} from "react-dom/server";
 
 export const ArticleView = (props) => {
     const location = useLocation();
@@ -46,6 +47,25 @@ export const ArticleView = (props) => {
             })
             .catch(err=>{})
     }
+    const updateArticle = () => {
+        fetch('/board/article', {
+            method: 'PATCH',
+            headers: {'content-type': 'application/json'},
+            body: JSON.stringify({
+                articleCode: article.articleCode,
+                title: article.title,
+                content: article.content
+            })
+        })
+            .then(res=>res.json())
+            .then(data=>{
+                alert("modified.");
+                getArticle(article.articleCode);
+            })
+            .catch(err=>{
+                alert("err");
+            })
+    }
     const getComments = (articleCode) => {
         fetch('/board/comments?articleCode='+articleCode)
             .then(res=>res.json())
@@ -55,6 +75,7 @@ export const ArticleView = (props) => {
                 const comments = document.getElementById('comments');
                 comments.innerHTML = '';
 
+                // TODO CSS 클래스 지정하기 귀찮음
                 for(let i=0; i<data.length; i++){
                     const rowData = data[i];
                     let row = document.createElement("form");
@@ -65,7 +86,7 @@ export const ArticleView = (props) => {
                     let rowInfo = document.createElement('div');
                     rowInfo.style.width = '30%';
                     rowInfo.style.display = 'flex';
-                    rowInfo.style.alignItems = 'flex-stat';
+                    rowInfo.style.alignItems = 'flex-end';
                     let writerName = document.createElement('h4');
                     writerName.textContent = rowData.writerName;
                     writerName.style.marginBottom = '5px';
@@ -76,6 +97,20 @@ export const ArticleView = (props) => {
                     registeredAt.style.marginLeft = '15px';
                     registeredAt.textContent = rowData.registeredAt;
                     rowInfo.appendChild(registeredAt);
+                    if(rowData.myComment){
+                        let delBtn = document.createElement('button');
+                        delBtn.style.color = '#FF0000';
+                        delBtn.style.backgroundColor = '#DDDDDD';
+                        delBtn.textContent = 'X';
+                        delBtn.style.height = '25px';
+                        delBtn.style.marginLeft = '10px';
+                        delBtn.style.marginBottom = '3px';
+                        delBtn.addEventListener('click', (e)=>{
+                            e.preventDefault();
+                            deleteComment(rowData.commentCode);
+                        });
+                        rowInfo.appendChild(delBtn);
+                    }
                     let content = document.createElement('textarea');
                     content.style.width = '100%';
                     content.style.height = '50px';
@@ -118,6 +153,24 @@ export const ArticleView = (props) => {
             .then(data=>{getComments(article.articleCode)})
             .catch(err=>{alert('err')})
     }
+    const deleteComment = (commentCode) => {
+        fetch('/board/comment', {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                commentCode: commentCode
+            })
+        })
+            .then(res=>res.json())
+            .then(data=>{
+                if(data===1) alert("deleted.");
+                else alert("no authority.");
+                getComments(article.articleCode);
+            })
+            .catch(err=>{alert('err')})
+    }
 
     return (
         <div style={{
@@ -150,7 +203,7 @@ export const ArticleView = (props) => {
                             value={article.title}
                             onInput={handleInput}
                             style={{width: "100%", marginBottom: "10px"}}
-                            readOnly={true}
+                            readOnly={!article.myArticle && true}
                         />
                     </div><br/>
 
@@ -167,7 +220,7 @@ export const ArticleView = (props) => {
                             value={article.content}
                             onInput={handleInput}
                             style={{width: "100%", height: "500px"}}
-                            readOnly={true}
+                            readOnly={!article.myArticle && true}
                         />
                     </div>
 
@@ -180,7 +233,10 @@ export const ArticleView = (props) => {
                     }}>
                         {
                             article.myArticle &&
-                            <button onClick={(e) => {}}>
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                updateArticle();
+                            }}>
                             Update
                             </button>
                         }
@@ -212,7 +268,7 @@ export const ArticleView = (props) => {
                         marginTop: "10px"
                     }}>
                         <button onClick={(e)=>{
-                            postComment()
+                            postComment();
                         }}>+댓글
                         </button>
                     </div>

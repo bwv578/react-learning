@@ -26,13 +26,11 @@ export const AddNewArticle = ()=>{
         })
             .then(res=>res.json())
             .then(result=>{
-                alert(JSON.stringify(result));
-                switch (result){
-                    case 1:
-                        navigate('/articles');
-                        break;
-                    case -1:
-                        alert('error');
+                if(result===1){
+                    alert("Article registerd.");
+                    navigate('/articles');
+                }else{
+                    alert("error");
                 }
             })
             .catch(error=>{alert(error)})

@@ -11,7 +11,10 @@ public interface BoardMapper {
     int insertArticle(Article newArticle);
     int deleteArticle(Article target);
     List<Article> selectArticles(Article searchCondition);
+    int updateArticle(Article modifiedArticle);
+    int increaseArticleViews(Article viewdArticle);
     Article selectArticle(Article target);
     List<Comment> selectComments(Comment searchCondition);
     int insertComment(Comment newComment);
+    int deleteComment(Comment target);
 }

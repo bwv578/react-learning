@@ -29,13 +29,42 @@
         FROM
             ARTICLE A INNER JOIN USERS U ON A.WRITER_CODE = U.USER_CODE
         WHERE A.STATUS = 1
-            <if test="searchKey!=null and searchType!=null">
-            AND #{searchType} = #{searchKey}
+            <if test="searchValue!=null and searchType!=null">
+                <if test="searchType==1">
+                AND A.TITLE LIKE '%' || #{searchValue} || '%'
+                </if>
+                <if test="searchType==2">
+                AND A.CONTENT LIKE '%' || #{searchValue} || '%'
+                </if>
+                <if test="searchType==3">
+                    AND (A.TITLE LIKE '%' || #{searchValue} || '%'
+                             OR A.CONTENT LIKE '%' || #{searchValue} || '%')
+                </if>
+                <if test="searchType==4">
+                    AND U.NAME LIKE '%' || #{searchValue} || '%'
+                </if>
             </if>
         <if test="sortBy!=null">
         ORDER BY #{sortBy} #{order}
         </if>
     </select>
+
+    <update id="updateArticle" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
+        UPDATE ARTICLE
+        SET TITLE = #{title},
+            CONTENT = #{content}
+        WHERE ARTICLE_CODE = #{articleCode}
+          AND WRITER_CODE = #{writerCode}
+          AND STATUS = 1
+    </update>
+
+    <update id="increaseArticleViews" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
+        UPDATE ARTICLE
+        SET VIEWS = VIEWS+1
+        WHERE ARTICLE_CODE = #{articleCode}
+          AND WRITER_CODE != #{writerCode}
+          AND STATUS = 1
+    </update>
 
     <select id="selectArticle" parameterType="personal.reactlearning.simpleboard.board.domain.Article">
         SELECT
@@ -73,6 +102,7 @@
         FROM "COMMENT" C INNER JOIN USERS U ON C.WRITER_CODE = U.USER_CODE
         WHERE C.ARTICLE_CODE = #{articleCode}
           AND C.STATUS = 1
+        ORDER BY C.REGISTERED_AT DESC
     </select>
 
     <insert id="insertComment" parameterType="personal.reactlearning.simpleboard.board.domain.Comment">
@@ -80,4 +110,10 @@
         VALUES (SEQ_COMMENT_CODE.NEXTVAL, #{writerCode}, #{articleCode}, #{parentCode}, #{content}, SYSDATE, 1)
     </insert>
 
+    <update id="deleteComment" parameterType="personal.reactlearning.simpleboard.board.domain.Comment">
+        UPDATE "COMMENT"
+        SET STATUS = -1
+        WHERE COMMENT_CODE = #{commentCode}
+          AND WRITER_CODE = #{writerCode}
+    </update>
 </mapper>
