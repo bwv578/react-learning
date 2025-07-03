@@ -5,24 +5,20 @@ import jakarta.servlet.http.HttpSession;
 import personal.reactlearning.simpleboard.main.domain.User;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LoginManager {
-    private static LoginManager instance;
     private LoginManager (){};
-    public static LoginManager getInstance(){
-        if(instance==null) instance = new LoginManager();
-        return instance;
-    }
 
     /** loggedInUsers
      * k: session id
      * v: User
      */
-    private static volatile HashMap<HttpSession, User> loggedInUsers = new HashMap<>();
-    public static synchronized void registerUser(HttpSession session, User user){
+    private static final ConcurrentHashMap<HttpSession, User> loggedInUsers = new ConcurrentHashMap<>();
+    public static void registerUser(HttpSession session, User user){
         loggedInUsers.put(session, user);
     }
-    public synchronized void removeUser(HttpSession session, User user){
+    public static void removeUser(HttpSession session){
         loggedInUsers.remove(session);
     }
     public static User getCurrentUser(HttpServletRequest req){
