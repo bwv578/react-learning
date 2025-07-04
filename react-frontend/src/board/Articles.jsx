@@ -48,7 +48,7 @@ export const Articles = ()=>{
                     }
 
                     row.addEventListener('click', ()=>{
-                        navigate('/ArticleView', {state: {
+                        navigate('/community/articleview', {state: {
                             articleCode: rowObject.articleCode
                         }});
                     });
@@ -106,7 +106,7 @@ export const Articles = ()=>{
             display: "flex",
             justifyContent: "flex-end"
         }}>
-            <button onClick={(e)=>{navigate("/AddNewArticle")}}>+새글 싸기</button>&nbsp;
+            <button onClick={(e)=>{navigate("/community/addnewarticle")}}>+새글 싸기</button>&nbsp;
         </div>
 
         <table id="contents-list" className="board-table"

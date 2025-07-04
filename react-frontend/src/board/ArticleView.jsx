@@ -79,32 +79,40 @@ export const ArticleView = (props) => {
                 for(let i=0; i<data.length; i++){
                     const rowData = data[i];
                     let row = document.createElement("form");
-                    row.style.marginBottom = '30px';
-                    row.style.width = '100%';
-                    row.style.height = '70px';
-                    row.style.marginTop = '0px';
+                    Object.assign(row.style, {
+                        marginBottom: '30px',
+                        width: '100%',
+                        height: '70px',
+                        marginTop: '0px'
+                    });
                     let rowInfo = document.createElement('div');
-                    rowInfo.style.width = '30%';
-                    rowInfo.style.display = 'flex';
-                    rowInfo.style.alignItems = 'flex-end';
+                    Object.assign(rowInfo.style,{
+                        width: '30%',
+                        display: 'flex',
+                        alignItems: 'flex-end'
+                    })
                     let writerName = document.createElement('h4');
                     writerName.textContent = rowData.writerName;
                     writerName.style.marginBottom = '5px';
                     rowInfo.appendChild(writerName);
                     let registeredAt = document.createElement('h4');
-                    registeredAt.style.marginBottom = '5px';
-                    registeredAt.style.color = 'rgba(0, 0, 0, 0.5)';
-                    registeredAt.style.marginLeft = '15px';
+                    Object.assign(registeredAt.style, {
+                        marginBottom: '5px',
+                        color: 'rgba(0, 0, 0, 0.5)',
+                        marginLeft: '15px'
+                    });
                     registeredAt.textContent = rowData.registeredAt;
                     rowInfo.appendChild(registeredAt);
                     if(rowData.myComment){
                         let delBtn = document.createElement('button');
-                        delBtn.style.color = '#FF0000';
-                        delBtn.style.backgroundColor = '#DDDDDD';
                         delBtn.textContent = 'X';
-                        delBtn.style.height = '25px';
-                        delBtn.style.marginLeft = '10px';
-                        delBtn.style.marginBottom = '3px';
+                        Object.assign(delBtn.style, {
+                            color: '#FF0000',
+                            backgroundColor: '#DDDDDD',
+                            height: '25px',
+                            marginLeft: '10px',
+                            marginBottom: '3px'
+                        });
                         delBtn.addEventListener('click', (e)=>{
                             e.preventDefault();
                             deleteComment(rowData.commentCode);
@@ -112,10 +120,13 @@ export const ArticleView = (props) => {
                         rowInfo.appendChild(delBtn);
                     }
                     let content = document.createElement('textarea');
-                    content.style.width = '100%';
-                    content.style.height = '50px';
-                    content.style.marginTop = '0px';
+                    Object.assign(content.style, {
+                        width: '100%',
+                        marginTop: '0px',
+                        height: '50px'
+                    });
                     content.textContent = rowData.content;
+                    content.readOnly = true;
                     row.appendChild(rowInfo);
                     row.appendChild(content);
 

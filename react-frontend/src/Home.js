@@ -1,18 +1,18 @@
 import './App.css';
 import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
 
-function App() {
+function Home() {
 
     useEffect(() => {
         fetch('/loginStatus')
             .then(res=>res.json())
             .then(data=>{
-                if(data===1) navigate('/articles');
+                if(data===1) navigate('/community/articles');
             })
             .catch(err=>{})
     }, []);
-
     const [newUser, setNewUser] = useState({
         "id" : "",
         "name" : "",
@@ -23,6 +23,7 @@ function App() {
         "pw" : ""
     });
     const navigate = useNavigate();
+    const dispatch  = useDispatch();
 
     const handleUserInfoChange = (e) => {
         const parent = e.target.closest('form').getAttribute('id');
@@ -56,7 +57,7 @@ function App() {
             .then(data=>{
                 if(data===1){
                     setNewUser({"id":'', "pw":'', "name":''});
-                    alert("registerd.");
+                    alert("registered.");
                 }else{
                     alert("error");
                 }
@@ -75,13 +76,19 @@ function App() {
         })
             .then(res=>res.json())
             .then(data=>{
-                switch (data){
+                const result = data.result;
+
+                switch (result){
                     case -1 :
                         alert("Invalid");
                         break;
                     case 1 :
+                        dispatch({
+                            type: 'LOGIN_SUCCESS',
+                            payload: {username: data.username}
+                        })
                         alert("Success");
-                        navigate("/articles");
+                        navigate("/community/articles");
                         break;
                 }
             })
@@ -135,4 +142,4 @@ function App() {
     );
 }
 
-export default App;
+export default Home;

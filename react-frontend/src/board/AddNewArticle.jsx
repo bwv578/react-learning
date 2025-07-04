@@ -28,7 +28,7 @@ export const AddNewArticle = ()=>{
             .then(result=>{
                 if(result===1){
                     alert("Article registerd.");
-                    navigate('/articles');
+                    navigate('/community/articles');
                 }else{
                     alert("error");
                 }
