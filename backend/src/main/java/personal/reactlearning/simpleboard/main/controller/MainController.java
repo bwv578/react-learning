@@ -10,6 +10,9 @@ import personal.reactlearning.simpleboard.main.LoginManager;
 import personal.reactlearning.simpleboard.main.domain.User;
 import personal.reactlearning.simpleboard.main.mapper.MainMapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 public class MainController {
 
@@ -38,10 +41,22 @@ public class MainController {
 
     @PostMapping("/signin")
     @ResponseBody
-    public int signIn(@RequestBody User guest, HttpServletRequest req, HttpServletResponse res){
+    public Map signIn(@RequestBody User guest, HttpServletRequest req, HttpServletResponse res){
+        HashMap<String, Object> resultMap = new HashMap<>();
         User member = mainMapper.selectUser(guest);
-        if(member==null) return -1;
-        LoginManager.registerUser(req.getSession(), member);
+
+        int result = member==null? -1 : 1;
+        String username = member==null? "unknown" : member.getName();
+        if(result==1) LoginManager.registerUser(req.getSession(), member);
+
+        resultMap.put("result", result);
+        resultMap.put("username", username);
+        return resultMap;
+    }
+
+    @GetMapping("/logout")
+    public int logout(HttpServletRequest req, HttpServletResponse res){
+        LoginManager.removeUser(req.getSession());
         return 1;
     }
 }

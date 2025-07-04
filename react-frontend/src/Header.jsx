@@ -1,7 +1,6 @@
 import {data, Outlet} from "react-router-dom";
 import profile from './default.png';
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
 import {useSelector} from "react-redux";
 
 export const Header = () => {

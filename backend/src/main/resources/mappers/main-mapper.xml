@@ -13,6 +13,7 @@
     <select id="selectUser" parameterType="personal.reactlearning.simpleboard.main.domain.User">
         SELECT USER_CODE AS userCode,
                ID AS id,
+               NAME AS name,
                PW AS pw
         FROM USERS
         WHERE ID = #{id}
