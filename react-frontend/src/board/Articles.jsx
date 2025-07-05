@@ -12,6 +12,7 @@ export const Articles = ()=>{
         searchValue: '',
         searchType: '1'
     });
+    const [articles, setArticles] = useState([]);
     const [orderBy, setOrderBy] = useState("");
     const navigate = useNavigate();
 
@@ -19,41 +20,7 @@ export const Articles = ()=>{
         fetch('/board/articles?searchType='+searchKey.searchType+"&searchValue="+searchKey.searchValue)
             .then(res=>res.json())
             .then(data=>{
-                document.getElementById('articles-body').innerHTML = '';
-                const columns = ['title', 'writerName', 'registeredAt', 'views'];
-
-                for (let i=0; i<data.length; i++){
-                    let row = document.createElement("tr");
-                    const number = document.createElement('td');
-                    number.textContent = i+1;
-                    row.appendChild(number);
-                    const rowObject = data[i];
-
-                    for(const column of columns){
-                        let item  = document.createElement("td");
-                        item.textContent = rowObject[column];
-                        if(column==='title' && rowObject.myArticle){
-                            let delBtn = document.createElement('button');
-                            delBtn.style.marginLeft = "5px";
-                            delBtn.style.color = "red";
-                            delBtn.style.backgroundColor = "white";
-                            delBtn.textContent = 'X';
-                            delBtn.addEventListener('click', (e)=>{
-                                e.stopPropagation();
-                                deleteArticle(rowObject.articleCode);
-                            });
-                            item.appendChild(delBtn);
-                        }
-                        row.appendChild(item);
-                    }
-
-                    row.addEventListener('click', ()=>{
-                        navigate('/community/articleview', {state: {
-                            articleCode: rowObject.articleCode
-                        }});
-                    });
-                    document.getElementById('articles-body').appendChild(row);
-                }
+                setArticles(data);
             })
             .catch()
     }
@@ -121,6 +88,27 @@ export const Articles = ()=>{
             </tr>
             </thead>
             <tbody id="articles-body">
+            {articles.map((row, index)=>(<tr key={row.articleCode} onClick={()=>{
+                navigate('/community/articleview', {state: {
+                        articleCode: row.articleCode
+                }});
+            }}>
+                <td>{index+1}</td>
+                <td>{row.title}{row.myArticle &&
+                    <button style={{
+                        marginLeft: "5px",
+                        color: "red",
+                        backgroundColor: "white"
+                    }} onClick={(e)=>{
+                        e.preventDefault();
+                        e.stopPropagation()
+                        deleteArticle(row.articleCode)
+                    }}>X</button>
+                }</td>
+                <td>{row.writerName}</td>
+                <td>{row.registeredAt}</td>
+                <td>{row.views}</td>
+            </tr>))}
             </tbody>
         </table>
 

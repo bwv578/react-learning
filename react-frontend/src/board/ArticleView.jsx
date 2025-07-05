@@ -12,6 +12,7 @@ export const ArticleView = (props) => {
         views: '',
         myArticle: ''
     });
+    const [comments, setComments] = useState([]);
     const [comment, setComment] = useState({
         articleCode: article.articleCode,
         content: ''
@@ -70,83 +71,7 @@ export const ArticleView = (props) => {
         fetch('/board/comments?articleCode='+articleCode)
             .then(res=>res.json())
             .then(data=>{
-                const elements = ['commentCode', 'writerCode', 'writerName',
-                    'parentCode', 'registeredAt', 'status'];
-                const comments = document.getElementById('comments');
-                comments.innerHTML = '';
-
-                // TODO CSS 클래스 지정하기 귀찮음
-                for(let i=0; i<data.length; i++){
-                    const rowData = data[i];
-                    let row = document.createElement("form");
-                    Object.assign(row.style, {
-                        marginBottom: '30px',
-                        width: '100%',
-                        height: '70px',
-                        marginTop: '0px'
-                    });
-                    let rowInfo = document.createElement('div');
-                    Object.assign(rowInfo.style,{
-                        width: '30%',
-                        display: 'flex',
-                        alignItems: 'flex-end'
-                    })
-                    let writerName = document.createElement('h4');
-                    writerName.textContent = rowData.writerName;
-                    writerName.style.marginBottom = '5px';
-                    rowInfo.appendChild(writerName);
-                    let registeredAt = document.createElement('h4');
-                    Object.assign(registeredAt.style, {
-                        marginBottom: '5px',
-                        color: 'rgba(0, 0, 0, 0.5)',
-                        marginLeft: '15px'
-                    });
-                    registeredAt.textContent = rowData.registeredAt;
-                    rowInfo.appendChild(registeredAt);
-                    if(rowData.myComment){
-                        let delBtn = document.createElement('button');
-                        delBtn.textContent = 'X';
-                        Object.assign(delBtn.style, {
-                            color: '#FF0000',
-                            backgroundColor: '#DDDDDD',
-                            height: '25px',
-                            marginLeft: '10px',
-                            marginBottom: '3px'
-                        });
-                        delBtn.addEventListener('click', (e)=>{
-                            e.preventDefault();
-                            deleteComment(rowData.commentCode);
-                        });
-                        rowInfo.appendChild(delBtn);
-                    }
-                    let content = document.createElement('textarea');
-                    Object.assign(content.style, {
-                        width: '100%',
-                        marginTop: '0px',
-                        height: '50px'
-                    });
-                    content.textContent = rowData.content;
-                    content.readOnly = true;
-                    row.appendChild(rowInfo);
-                    row.appendChild(content);
-
-                    for(const element of elements){
-                        let attribute = document.createElement('input');
-                        attribute.setAttribute('type','hidden');
-                        attribute.value = rowData[element];
-                        row.appendChild(attribute);
-                    }
-                    comments.appendChild(row);
-                }
-
-                setCommentCnt(data.length);
-                setComment({
-                    articleCode: 0,
-                    title: '',
-                    content: '',
-                    views: '',
-                    myArticle: ''
-                });
+                setComments(data);
             })
     }
     const postComment = () => {
@@ -303,6 +228,47 @@ export const ArticleView = (props) => {
                         <div id='comments' style={{
                             width: "80%"
                         }}>
+                            {comments.map((row, index) => (
+                                <form key={row.commentCode} style={{
+                                    marginBottom: '30px',
+                                    width: '100%',
+                                    height: '70px',
+                                    marginTop: '0px'
+                                }}>
+                                    <div style={{
+                                        width: '30%',
+                                        display: 'flex',
+                                        alignItems: 'flex-end'
+                                    }}>
+                                        <h4 style={{marginBottom:'5px'}}>{row.writerName}</h4>
+                                        <h4 style={{
+                                            marginBottom: '5px',
+                                            color: 'rgba(0, 0, 0, 0.5)',
+                                            marginLeft: '15px'
+                                        }}>{row.registeredAt}</h4>
+                                        {row.myComment &&
+                                            <button style={{
+                                                color: '#FF0000',
+                                                backgroundColor: '#DDDDDD',
+                                                height: '25px',
+                                                marginLeft: '10px',
+                                                marginBottom: '3px'
+                                            }} onClick={(e)=>{
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                                deleteComment(row.commentCode);
+                                            }}>X</button>
+                                        }
+                                    </div>
+                                    <textarea style={{
+                                        width: '100%',
+                                        marginTop: '0px',
+                                        height: '50px'
+                                    }} readOnly={true}>
+                                        {row.content}
+                                    </textarea>
+                                </form>
+                            ))}
                         </div>
                     </div>
                 </div>
