@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="personal.reactlearning.simpleboard.main.mapper.MainMapper">
+<mapper namespace="personal.reactlearning.simpleboard.auth.mapper.AuthMapper">
     <insert id="insertTest">
         INSERT INTO CHORE (COL4, COL5, COL6) VALUES (1, 1, 1)
     </insert>
 
-    <insert id="insertUser" parameterType="personal.reactlearning.simpleboard.main.domain.User">
+    <insert id="insertUser" parameterType="personal.reactlearning.simpleboard.auth.domain.User">
         INSERT INTO USERS (USER_CODE, ID, PW, NAME)
         VALUES (SEQ_USER_CODE.NEXTVAL, #{id}, #{pw}, #{name})
     </insert>
 
-    <select id="selectUser" parameterType="personal.reactlearning.simpleboard.main.domain.User">
+    <select id="selectUser" parameterType="personal.reactlearning.simpleboard.auth.domain.User">
         SELECT USER_CODE AS userCode,
                ID AS id,
                NAME AS name,

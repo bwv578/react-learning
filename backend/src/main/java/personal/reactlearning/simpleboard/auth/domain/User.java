@@ -1,4 +1,4 @@
-package personal.reactlearning.simpleboard.main.domain;
+package personal.reactlearning.simpleboard.auth.domain;
 
 import lombok.Data;
 

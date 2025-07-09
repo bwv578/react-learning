@@ -5,8 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import personal.reactlearning.simpleboard.main.LoginManager;
-import personal.reactlearning.simpleboard.main.domain.User;
+import personal.reactlearning.simpleboard.auth.util.LoginManager;
+import personal.reactlearning.simpleboard.auth.domain.User;
 
 @Component
 public class BoardInterceptor implements HandlerInterceptor {

@@ -3,17 +3,16 @@ package personal.reactlearning.simpleboard.board.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import personal.reactlearning.simpleboard.board.domain.Article;
 import personal.reactlearning.simpleboard.board.domain.Comment;
 import personal.reactlearning.simpleboard.board.mapper.BoardMapper;
 import personal.reactlearning.simpleboard.board.service.BoardService;
-import personal.reactlearning.simpleboard.main.LoginManager;
+import personal.reactlearning.simpleboard.auth.util.LoginManager;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/board")
 public class BoardController {
 
@@ -23,7 +22,6 @@ public class BoardController {
     private BoardService boardService;
 
     @GetMapping("/articles")
-    @ResponseBody
     public List<Article> getArticles(@ModelAttribute Article searchCondition,
                                         HttpServletRequest req, HttpServletResponse res){
         searchCondition.setWriterCode(LoginManager.getCurrentUserCode(req));
@@ -31,7 +29,6 @@ public class BoardController {
     }
 
     @PostMapping("/article")
-    @ResponseBody
     public int postArticle(@RequestBody Article newArticle,
                            HttpServletRequest req, HttpServletResponse res){
         newArticle.setWriterCode(LoginManager.getCurrentUserCode(req));
@@ -39,7 +36,6 @@ public class BoardController {
     }
 
     @DeleteMapping("/article")
-    @ResponseBody
     public int deleteArticle(@RequestBody Article target,
                              HttpServletRequest req, HttpServletResponse res){
         target.setWriterCode(LoginManager.getCurrentUserCode(req));
@@ -47,7 +43,6 @@ public class BoardController {
     }
 
     @GetMapping("/article")
-    @ResponseBody
     public Article getArticle(@ModelAttribute Article target,
                               HttpServletRequest req, HttpServletResponse res){
         target.setWriterCode(LoginManager.getCurrentUserCode(req));
@@ -55,7 +50,6 @@ public class BoardController {
     }
 
     @PatchMapping("/article")
-    @ResponseBody
     public int updateArticle(@RequestBody Article modifiedArticle,
                              HttpServletRequest req, HttpServletResponse res){
         modifiedArticle.setWriterCode(LoginManager.getCurrentUserCode(req));
@@ -63,7 +57,6 @@ public class BoardController {
     }
 
     @GetMapping("/comments")
-    @ResponseBody
     public List<Comment> getComments(@ModelAttribute Comment searchCondition,
                                      HttpServletRequest req, HttpServletResponse res){
         searchCondition.setWriterCode(LoginManager.getCurrentUserCode(req));
@@ -71,7 +64,6 @@ public class BoardController {
     }
 
     @PostMapping("/comment")
-    @ResponseBody
     public int postComment(@RequestBody Comment newComment,
                            HttpServletRequest req, HttpServletResponse res){
         newComment.setWriterCode(LoginManager.getCurrentUserCode(req));
@@ -79,11 +71,9 @@ public class BoardController {
     }
 
     @DeleteMapping("/comment")
-    @ResponseBody
     public int deleteComment(@RequestBody Comment target,
                              HttpServletRequest req, HttpServletResponse res){
         target.setWriterCode(LoginManager.getCurrentUserCode(req));
         return boardMapper.deleteComment(target);
     }
-
 }

@@ -76,21 +76,15 @@ function Home() {
         })
             .then(res=>res.json())
             .then(data=>{
-                const result = data.result;
-
-                switch (result){
-                    case -1 :
-                        alert("Invalid");
-                        break;
-                    case 1 :
-                        dispatch({
-                            type: 'LOGIN_SUCCESS',
-                            payload: {username: data.username}
-                        })
-                        alert("Success");
-                        navigate("/community/articles");
-                        break;
+                dispatch({
+                    type: "USER_UPDATE",
+                    payload: data
+                });
+                if(data.isLoggedIn) {
+                    alert('Welcome');
+                    navigate('/community/articles');
                 }
+                else alert('Invalid');
             })
             .catch(err=>alert(err));
     }

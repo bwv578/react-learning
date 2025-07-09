@@ -1,18 +1,34 @@
 import {data, Outlet} from "react-router-dom";
 import profile from './default.png';
 import {useNavigate} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
 
 export const Header = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const logout = () => {
         fetch("/logout", {})
             .then(res=>res.json())
             .then(data=>{
-                navigate('/')
+                navigate('/');
             })
             .catch(err=>{alert("err")})
     }
+
+    useEffect(()=>{
+        fetch('/loginStatus')
+            .then(res=>res.json())
+            .then(data=>{
+                dispatch({
+                    type: "USER_UPDATE",
+                    payload: data
+                });
+
+                if(!data.isLoggedIn) navigate("/");
+            })
+            .catch(err=>{})
+    }, []);
 
     const {isLoggedIn, username} = useSelector(state => state.user);
 

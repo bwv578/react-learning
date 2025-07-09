@@ -101,8 +101,8 @@ export const Articles = ()=>{
                         backgroundColor: "white"
                     }} onClick={(e)=>{
                         e.preventDefault();
-                        e.stopPropagation()
-                        deleteArticle(row.articleCode)
+                        e.stopPropagation();
+                        deleteArticle(row.articleCode);
                     }}>X</button>
                 }</td>
                 <td>{row.writerName}</td>

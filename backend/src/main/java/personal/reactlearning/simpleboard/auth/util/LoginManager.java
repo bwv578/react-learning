@@ -1,10 +1,9 @@
-package personal.reactlearning.simpleboard.main;
+package personal.reactlearning.simpleboard.auth.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import personal.reactlearning.simpleboard.main.domain.User;
+import personal.reactlearning.simpleboard.auth.domain.User;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LoginManager {
