@@ -1,4 +1,4 @@
-import {data, Outlet} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import profile from './default.png';
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -46,7 +46,9 @@ export const Header = () => {
                 marginLeft: '30px',
             }}>
                 <a href="/" style={{marginRight: '15px'}}>HOME</a>
-                <a href="/community/articles">ARTICLES</a>
+                <a href="/community/articles" style={{marginRight: '15px'}}>ARTICLES</a>
+                <a href="/battleField/lobby" style={{marginRight: '15px'}}>싸움터</a>
+                <a href="/game"></a>
             </div>
             <div id="user-info" style={{
                 display: 'flex',
@@ -57,9 +59,9 @@ export const Header = () => {
                 {isLoggedIn && (<>
                     <img src={profile} alt="" style={{marginRight: '15px', width:'45px'}}/>
                     <p style={{marginRight:'15px'}}>{username}</p>
-                    <a href="#" style={{fontWeight:"normal"}} onClick={()=>{
-                        logout();
-                    }}>logout</a>
+                    <button onClick={logout} style={{fontWeight: 'normal'}}>
+                        logout
+                    </button>
                 </>)}
             </div>
         </div>

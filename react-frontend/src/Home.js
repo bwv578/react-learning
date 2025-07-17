@@ -1,29 +1,40 @@
 import './App.css';
 import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 function Home() {
+    const navigate = useNavigate();
+    const dispatch  = useDispatch();
+    const {isLoggedIn, username} = useSelector(state => state.user);
+    useEffect(() => {
+        if(isLoggedIn){
+            navigate("/community/articles");
+        }
+    }, [isLoggedIn]);
 
     useEffect(() => {
         fetch('/loginStatus')
             .then(res=>res.json())
             .then(data=>{
-                if(data===1) navigate('/community/articles');
+                dispatch({
+                    type: "USER_UPDATE",
+                    payload: data
+                });
             })
             .catch(err=>{})
     }, []);
+
     const [newUser, setNewUser] = useState({
         "id" : "",
         "name" : "",
         "pw" : ""
     });
+
     const [user, setUser] = useState({
         "id" : "",
         "pw" : ""
     });
-    const navigate = useNavigate();
-    const dispatch  = useDispatch();
 
     const handleUserInfoChange = (e) => {
         const parent = e.target.closest('form').getAttribute('id');

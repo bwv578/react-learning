@@ -1,4 +1,4 @@
-package personal.reactlearning.simpleboard.board.interceptor;
+package personal.reactlearning.simpleboard.auth.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,12 +9,12 @@ import personal.reactlearning.simpleboard.auth.util.LoginManager;
 import personal.reactlearning.simpleboard.auth.domain.User;
 
 @Component
-public class BoardInterceptor implements HandlerInterceptor {
+public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         User currentUser = LoginManager.getCurrentUser(request);
         if(currentUser==null){
-            response.sendRedirect("/");
+            response.getWriter().write("<h1>403 Forbidden</h1>");
             return false;
         }
         return true;
@@ -30,3 +30,4 @@ public class BoardInterceptor implements HandlerInterceptor {
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 }
+

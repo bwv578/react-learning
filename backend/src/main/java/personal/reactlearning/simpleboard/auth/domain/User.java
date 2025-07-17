@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class User {
-    private int userCode;
-    private String name;
-    private String id;
-    private String pw;
-    private String sessionId;
+    protected int userCode;
+    protected String name;
+    protected String id;
+    protected String pw;
+    protected String sessionId;
 }
