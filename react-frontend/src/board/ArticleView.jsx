@@ -16,7 +16,7 @@ export const ArticleView = (props) => {
     const [comment, setComment] = useState({
         articleCode: article.articleCode,
         content: ''
-    })
+    });
     const [commentCnt, setCommentCnt] = useState(0);
 
     useEffect(() => {

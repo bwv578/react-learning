@@ -6,6 +6,7 @@ import {ArticleView} from "./board/ArticleView";
 import React from "react";
 import {Header} from "./Header";
 import {Lobby} from "./battleField/Lobby";
+import {Chess} from "./battleField/Chess";
 
 export const App = ()=>{
 
@@ -19,7 +20,7 @@ export const App = ()=>{
             </Route>
             <Route path="/battleField" element={<Header/>}>
                 <Route path="lobby" element={<Lobby/>}/>
-                <Route path="chess"/>
+                <Route path="chess" element={<Chess/>}/>
             </Route>
         </Routes>
     </BrowserRouter>
