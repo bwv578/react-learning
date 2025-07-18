@@ -101,12 +101,12 @@ public class ChessBoard {
                     if(doublePushMask[x][y]==1) moves.add(new int[] {x-2, y});
                     moves.add(new int[] {x-1, y+1});
                     moves.add(new int[] {x-1, y-1});
+                }else{
+                    moves.add(new int[] {x+1, y});
+                    if(doublePushMask[x][y]==1) moves.add(new int[] {x+2, y});
+                    moves.add(new int[] {x+1, y+1});
+                    moves.add(new int[] {x+1, y-1});
                 }
-
-                moves.add(new int[] {x+1, y});
-                if(doublePushMask[x][y]==1) moves.add(new int[] {x+2, y});
-                moves.add(new int[] {x+1, y+1});
-                moves.add(new int[] {x+1, y-1});
                 break;
 
             case 2:
