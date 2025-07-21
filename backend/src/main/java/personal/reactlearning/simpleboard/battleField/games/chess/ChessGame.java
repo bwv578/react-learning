@@ -4,6 +4,7 @@ import lombok.Data;
 import personal.reactlearning.simpleboard.battleField.games.Game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @Data
 public class ChessGame extends Game {
@@ -25,7 +26,7 @@ public class ChessGame extends Game {
     private int[][] doublePushMask;
     private int[][] castleMask;
     private int[][] enPassantMask;
-    private ArrayList[][] moves = new ArrayList[8][8];
+    private ArrayList<int[]>[][] moves = new ArrayList[8][8];
 
     private static final int[][][] directionVectors = new int[][][] {
             {}, // 0
@@ -73,12 +74,17 @@ public class ChessGame extends Game {
                 {0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0},
         };
+        calc();
     }
 
     public boolean move(int[]from, int[] to) {
-        if(!this.moves[from[0]][from[1]].contains(to)) return false;
+        boolean possibleMove = this.moves[from[0]][from[1]].stream()
+                .anyMatch(move -> move[0] == to[0] && move[1] == to[1]);
+
+        if (!possibleMove) return false;
         this.board[to[0]][to[1]] = this.board[from[0]][from[1]];
         this.board[from[0]][from[1]] = 0;
+        calc();
         return true;
     }
 

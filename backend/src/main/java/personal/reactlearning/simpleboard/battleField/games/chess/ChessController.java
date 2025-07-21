@@ -37,7 +37,7 @@ public class ChessController {
         }
 
         result.put("board", chessGame.getBoard());
-        result.put("moves", chessGame.calc());
+        result.put("moves", chessGame.getMoves());
         return result;
     }
 
@@ -59,7 +59,7 @@ public class ChessController {
             resultMap.put("MSG", "MATCHED");
             ChessGame chessGame = chessGames.get(requester.getGameId());
             resultMap.put("board", chessGame.getBoard());
-            resultMap.put("moves", chessGame.calc());
+            resultMap.put("moves", chessGame.getMoves());
             return resultMap;
         }
 
@@ -75,7 +75,7 @@ public class ChessController {
 
                         resultMap.put("MSG", "MATCHED");
                         resultMap.put("board", chessGame.getBoard());
-                        resultMap.put("moves", chessGame.calc());
+                        resultMap.put("moves", chessGame.getMoves());
                         return resultMap;
                     } catch (Exception e) {
                         throw new RuntimeException(e);
@@ -99,9 +99,9 @@ public class ChessController {
 
         synchronized (chessGame) {
             try {
-                chessGame.move(instruction.get("from"), instruction.get("to"));
-                chessGame.notify();
-                return true;
+                boolean result = chessGame.move(instruction.get("from"), instruction.get("to"));
+                chessGame.notifyAll();
+                return result;
             } catch (Exception e) {
                 return false;
             }

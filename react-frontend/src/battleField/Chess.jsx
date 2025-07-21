@@ -75,6 +75,7 @@ export const Chess = ()=>{
     }
 
     const updateGameStatus = (pending) =>{
+        alert('update');
         fetch('/battleField/chess/chessBoard?pending='+pending)
             .then(res=>res.json())
             .then(data => {
@@ -105,7 +106,8 @@ export const Chess = ()=>{
         })
             .then(res=>res.json())
             .then(data=>{
-                if(data===true) updateGameStatus(0);
+                if(data===true) alert('move success');
+                    //updateGameStatus(0);
             })
             .catch(err=>{alert('err')})
     }
