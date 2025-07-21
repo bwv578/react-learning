@@ -16,41 +16,98 @@ import {data} from "react-router-dom";
 
 export const Chess = ()=>{
 
-    let [board, setBoard] = useState([]);
+    let [match, setMatch] = useState(false);
     let [gameStatus, setGameStatus] = useState({
         turn: 0,
         board: [],
-        moves: []
+        moves: [],
     });
-    //let []
+    let [info, setInfo] = useState({
+        selected: [],
+        hints: [
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0]
+        ]
+    });
+    let [instruction, setInstruction] = useState({
+        from: [],
+        to: []
+    })
 
     useEffect(() => {
-        //getBoard();
-        updateGameStatus();
+        randomJoin();
     }, []);
+    useEffect(() => {
+        movePiece();
+    }, [instruction.to]);
 
-    const getBoard = ()=>{
-        fetch('/battleField/chess/chessBoard')
-            .then(res => res.json())
-            .then(board => {
-                setBoard(board);
+    const randomJoin = () => {
+        fetch('/battleField/chess/randomJoin', {
+            method: 'POST'
+        })
+            .then(res=>res.json())
+            .then(data=>{
+                switch (data.MSG){
+                    case 'DENIED':
+                        alert("MATCH DENIED");
+                        return;
+
+                    case 'MATCHED':
+                        setGameStatus({
+                            board: data.board,
+                            moves: data.moves
+                        })
+                        updateGameStatus(1);
+                        return;
+
+                    case 'WAITING':
+                        updateGameStatus(0);
+                        return;
+                }
             })
-            .catch(err => console.log(err));
+            .catch(err=>console.log(err));
     }
 
-    const updateGameStatus = () =>{
-        fetch('/battleField/chess/chessBoard')
+    const updateGameStatus = (pending) =>{
+        fetch('/battleField/chess/chessBoard?pending='+pending)
             .then(res=>res.json())
             .then(data => {
-                setGameStatus(data)
+                setGameStatus(data);
+                updateGameStatus(1);
             })
             .catch(err => console.log(err));
     }
 
-    const hint = (rIdx, cIdx)=>{
-        gameStatus.moves[rIdx][cIdx].map(
-            move => document.querySelector('[data-row]')
-        )
+    const hint = (moves)=>{
+        let newHints = Array(8).fill().map(() => Array(8).fill(0));
+        for(let move of moves){
+            newHints[move[0]][move[1]] = 1;
+        }
+        setInfo({
+            ...info,
+            hints: newHints
+        });
+    }
+
+    const movePiece = ()=>{
+        fetch('/battleField/chess/move', {
+            method: 'POST',
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(instruction)
+        })
+            .then(res=>res.json())
+            .then(data=>{
+                if(data===true) updateGameStatus(0);
+            })
+            .catch(err=>{alert('err')})
     }
 
     const pieces = [
@@ -76,19 +133,48 @@ export const Chess = ()=>{
                         (cell,cIdx) => <td key={cIdx} style={{
                             width: '70px',
                             height: '70px',
-                            backgroundColor: (rIdx+cIdx)%2===1? "green" : "white",
+                            backgroundColor: info.selected[0]===rIdx && info.selected[1]===cIdx? 'yellow' :
+                                (rIdx+cIdx)%2===1? "green" : "white",
                             alignItems: 'center',
                             justifyContent: 'center',
-                            textAlign: 'center'
+                            textAlign: 'center',
+                            position: 'relative'
                         }} onClick={(e)=>{
                             e.preventDefault();
                             e.stopPropagation();
-                            hint(rIdx, cIdx);
-                            console.log(
-                                gameStatus.moves[rIdx][cIdx]
-                            )
+
+                            const selected = info.hints[rIdx][cIdx]===0;
+                            if(selected){
+                                setInfo({
+                                    ...info,
+                                    selected: [rIdx, cIdx]
+                                });
+                                hint(gameStatus.moves[rIdx][cIdx]);
+                                setInstruction({
+                                    ...instruction,
+                                    from: [rIdx, cIdx]
+                                })
+                            }else{
+                                setInstruction({
+                                    ...instruction,
+                                    to: [rIdx, cIdx]
+                                })
+                            }
                         }}>
                             <img src={pieces[cell]}/>
+                            <div style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '20px',
+                                height: '20px',
+                                backgroundColor: 'cyan',
+                                borderRadius: '50%',
+                                opacity: 0.7,
+                                pointerEvents: 'none',
+                                visibility: info.hints[rIdx][cIdx]===0? 'hidden' : 'visible'
+                            }} />
                         </td>
                     )
                 }</tr>

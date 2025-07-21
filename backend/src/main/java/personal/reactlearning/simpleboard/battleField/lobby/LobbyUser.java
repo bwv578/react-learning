@@ -8,6 +8,7 @@ public class LobbyUser extends User {
     private int status;
     private String message;
     private Boolean myself;
+    private String gameId;
 
     public LobbyUser patchUserInfo(User userInfo){
         this.userCode = userInfo.getUserCode();
